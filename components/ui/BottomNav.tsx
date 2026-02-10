@@ -1,19 +1,19 @@
 'use client'
 
-type View = 'cosmos' | 'feed' | 'create' | 'profile'
+type AppView = 'cosmos' | 'feed' | 'profile'
 
 interface Props {
-  activeView: View
-  onViewChange: (view: View) => void
+  activeView: AppView
+  onViewChange: (view: AppView) => void
   onCreateClick: () => void
 }
 
 export default function BottomNav({ activeView, onViewChange, onCreateClick }: Props) {
   const navItems = [
-    { id: 'feed' as View, icon: '🏠', label: 'Feed' },
-    { id: 'cosmos' as View, icon: '🌌', label: 'Cosmos' },
-    { id: 'create' as View, icon: '✨', label: 'Create', isSpecial: true },
-    { id: 'profile' as View, icon: '👤', label: 'Profile' },
+    { id: 'feed' as const, icon: '🏠', label: 'Feed', isSpecial: false },
+    { id: 'cosmos' as const, icon: '🌌', label: 'Cosmos', isSpecial: false },
+    { id: 'create' as const, icon: '✨', label: 'Create', isSpecial: true },
+    { id: 'profile' as const, icon: '👤', label: 'Profile', isSpecial: false },
   ]
 
   return (
@@ -23,7 +23,7 @@ export default function BottomNav({ activeView, onViewChange, onCreateClick }: P
           {navItems.map((item) => (
             <button
               key={item.id}
-              onClick={() => item.id === 'create' ? onCreateClick() : onViewChange(item.id)}
+              onClick={() => item.isSpecial ? onCreateClick() : onViewChange(item.id as AppView)}
               className={`relative flex flex-col items-center gap-1 py-2 px-4 rounded-2xl transition-all active:scale-95 ${
                 item.isSpecial
                   ? 'bg-gradient-to-r from-green-400 to-cyan-400 -mt-8 shadow-2xl shadow-green-400/50'
