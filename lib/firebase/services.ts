@@ -78,7 +78,8 @@ export const listenToUser = (uid: string, callback: (user: any) => void) => {
 export const searchUsers = async (searchTerm: string) => {
   const q = query(collection(db, 'users'), orderBy('username'), limit(20))
   const snapshot = await getDocs(q)
-  return snapshot.docs.map(doc => ({ uid: doc.id, ...doc.data() })).filter(user => user.username.toLowerCase().includes(searchTerm.toLowerCase()))
+  const users = snapshot.docs.map(doc => ({ uid: doc.id, ...doc.data() } as any))
+  return users.filter((user: any) => user.username && user.username.toLowerCase().includes(searchTerm.toLowerCase()))
 }
 
 // ===== FOLLOWS =====
