@@ -7,7 +7,7 @@ import { AVAILABLE_EMOJIS } from '@/types'
 export default function PostDetailModal({ post, onClose, onUserClick }: { post: any; onClose: () => void; onUserClick: (userId: string) => void }) {
   const { user } = useUserStore()
   const [isLiked, setIsLiked] = useState(false)
-  const [likesCount, setLikesCount] = useState(post.likesCount || 0)
+  const [likesCount, setLikesCount] = useState<number>(post.likesCount || 0)
   const [showReactions, setShowReactions] = useState(false)
   const [userReactions, setUserReactions] = useState<string[]>([])
 
@@ -28,12 +28,12 @@ export default function PostDetailModal({ post, onClose, onUserClick }: { post: 
   const handleLike = async () => {
     if (!user || isLiked) return
     setIsLiked(true)
-    setLikesCount(prev => prev + 1)
+    setLikesCount((prev: number) => prev + 1)
     try {
       await likePost(user.uid, post.id, post.authorId)
     } catch (error: any) {
       setIsLiked(false)
-      setLikesCount(prev => prev - 1)
+      setLikesCount((prev: number) => prev - 1)
     }
   }
 
