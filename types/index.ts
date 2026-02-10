@@ -12,6 +12,7 @@ export interface User {
   avatar?: string
   followersCount?: number
   followingCount?: number
+  ownedEmojis?: string[]
 }
 
 export interface Post {
@@ -20,29 +21,36 @@ export interface Post {
   username: string
   content: string
   likesCount: number
+  reactionsCount?: number
   commentsCount?: number
   createdAt: Timestamp
+  reactions?: { [emoji: string]: number }
 }
 
-export interface Like {
+export interface Reaction {
   userId: string
   postId: string
+  emoji: string
   createdAt: Timestamp
 }
 
-export interface Follow {
-  followerId: string
-  followingId: string
-  createdAt: Timestamp
-}
-
-export interface Notification {
+export interface Emoji {
   id: string
-  userId: string
-  type: 'like' | 'follow' | 'comment'
-  fromUserId: string
-  fromUsername: string
-  postId?: string
-  read: boolean
-  createdAt: Timestamp
+  emoji: string
+  name: string
+  price: number
+  rarity: 'common' | 'rare' | 'epic' | 'legendary'
 }
+
+export const AVAILABLE_EMOJIS: Emoji[] = [
+  { id: 'fire', emoji: '🔥', name: 'Fire', price: 5, rarity: 'common' },
+  { id: 'gem', emoji: '💎', name: 'Gem', price: 10, rarity: 'rare' },
+  { id: 'rocket', emoji: '🚀', name: 'Rocket', price: 8, rarity: 'common' },
+  { id: 'star', emoji: '⭐', name: 'Star', price: 7, rarity: 'common' },
+  { id: 'crown', emoji: '👑', name: 'Crown', price: 15, rarity: 'epic' },
+  { id: 'lightning', emoji: '⚡', name: 'Lightning', price: 12, rarity: 'rare' },
+  { id: 'moon', emoji: '🌙', name: 'Moon', price: 9, rarity: 'rare' },
+  { id: 'sparkles', emoji: '✨', name: 'Sparkles', price: 6, rarity: 'common' },
+  { id: 'trophy', emoji: '🏆', name: 'Trophy', price: 20, rarity: 'legendary' },
+  { id: 'brain', emoji: '🧠', name: 'Brain', price: 25, rarity: 'legendary' },
+]
