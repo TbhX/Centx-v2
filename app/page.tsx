@@ -11,7 +11,10 @@ export default function Home() {
   if (isLoading) {
     return (
       <div className="flex h-screen items-center justify-center bg-black">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-green-400"></div>
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-green-400 mx-auto mb-4"></div>
+          <div className="text-green-400 font-semibold animate-pulse">Loading CENTxt...</div>
+        </div>
       </div>
     )
   }

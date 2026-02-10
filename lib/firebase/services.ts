@@ -273,3 +273,98 @@ export const markAllNotificationsRead = async (userId: string) => {
   const batch = snapshot.docs.map(doc => updateDoc(doc.ref, { read: true }))
   await Promise.all(batch)
 }
+
+// ===== CASH OUT SYSTEM =====
+export const requestCashOut = async (userId: string, username: string) => {
+  const cashOutRef = doc(collection(db, 'cashouts'))
+  
+  await runTransaction(db, async (transaction) => {
+    const userRef = doc(db, 'users', userId)
+    const userDoc = await transaction.get(userRef)
+    
+    if (!userDoc.exists()) throw new Error('User not found')
+    
+    const earningsBalance = userDoc.data().earningsBalance || 0
+    
+    if (earningsBalance < MIN_CASHOUT_LIKES) {
+      throw new Error(`Minimum ${MIN_CASHOUT_LIKES} likes required (${MIN_CASHOUT_LIKES / LIKES_TO_EUR}€)`)
+    }
+    
+    const amountEur = earningsBalance / LIKES_TO_EUR
+    
+    transaction.set(cashOutRef, {
+      userId,
+      username,
+      amount: earningsBalance,
+      amountEur,
+      status: 'pending',
+      createdAt: serverTimestamp()
+    })
+    
+    transaction.update(userRef, {
+      earningsBalance: 0,
+      hasCashedOut: true,
+      totalCashedOut: increment(amountEur)
+    })
+    
+    const txRef = doc(collection(db, 'transactions'))
+    transaction.set(txRef, {
+      userId,
+      type: 'cashout',
+      amount: -earningsBalance,
+      amountEur,
+      createdAt: serverTimestamp()
+    })
+  })
+}
+
+export const getPendingCashOuts = async () => {
+  const q = query(
+    collection(db, 'cashouts'),
+    where('status', '==', 'pending'),
+    orderBy('createdAt', 'desc')
+  )
+  const snapshot = await getDocs(q)
+  return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))
+}
+
+export const completeCashOut = async (cashOutId: string) => {
+  await updateDoc(doc(db, 'cashouts', cashOutId), {
+    status: 'completed',
+    completedAt: serverTimestamp()
+  })
+}
+
+export const purchaseLikes = async (userId: string, amount: number, stripePaymentId: string) => {
+  await runTransaction(db, async (transaction) => {
+    const userRef = doc(db, 'users', userId)
+    const userDoc = await transaction.get(userRef)
+    
+    if (!userDoc.exists()) throw new Error('User not found')
+    
+    transaction.update(userRef, {
+      walletBalance: increment(amount)
+    })
+    
+    const txRef = doc(collection(db, 'transactions'))
+    transaction.set(txRef, {
+      userId,
+      type: 'purchase',
+      amount,
+      stripePaymentId,
+      createdAt: serverTimestamp()
+    })
+  })
+}
+
+export const getPlatformStats = async () => {
+  const statsDoc = await getDoc(doc(db, 'platform', 'stats'))
+  return statsDoc.exists() ? statsDoc.data() : null
+}
+
+export const listenToPlatformStats = (callback: (stats: any) => void) => {
+  return onSnapshot(doc(db, 'platform', 'stats'), (doc) => {
+    if (doc.exists()) callback(doc.data())
+    else callback(null)
+  })
+}
