@@ -52,8 +52,16 @@ export default function MainAppMobile() {
     setSelectedPost(post)
   }
 
+  console.log('🔍 MainAppMobile rendering, view:', view)
+  console.log('👤 User:', user?.username)
+
   return (
     <div className="min-h-screen bg-black">
+      {/* DEBUG: Header devrait être ici */}
+      <div className="fixed top-0 left-0 right-0 z-50 bg-red-500 text-white p-2 text-xs">
+        DEBUG: Header zone - User: {user?.username || 'None'} - View: {view}
+      </div>
+
       <HeaderMobile onUserSelect={handleUserSelect} />
 
       {view === 'cosmos' && (
