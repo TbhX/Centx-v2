@@ -2,12 +2,12 @@
 import { useState, useEffect } from 'react'
 import { listenToPosts, getFollowing } from '@/lib/firebase/services'
 import { useUserStore } from '@/store/userStore'
-import HeaderMobile from './ui/HeaderMobile'
-import BottomNav from './ui/BottomNav'
-import FeedViewMobile from './feed/FeedViewMobile'
+import HeaderPremium from './ui/HeaderPremium'
+import BottomNavPremium from './ui/BottomNavPremium'
+import FeedViewPremium from './feed/FeedViewPremium'
 import CosmosViewMobile from './cosmos/CosmosViewMobile'
 import UserProfile from './ui/UserProfile'
-import CreatePostModal from './post/CreatePostModal'
+import CreatePostPremium from './post/CreatePostPremium'
 import PostDetailModal from './cosmos/PostDetailModal'
 
 export default function MainAppMobile() {
@@ -54,14 +54,14 @@ export default function MainAppMobile() {
 
   return (
     <div className="min-h-screen bg-black">
-      <HeaderMobile onUserSelect={handleUserSelect} />
+      <HeaderPremium onUserSelect={handleUserSelect} />
 
       {view === 'cosmos' && (
         <CosmosViewMobile posts={posts} onPostClick={handlePostClick} />
       )}
       
       {view === 'feed' && (
-        <FeedViewMobile 
+        <FeedViewPremium 
           posts={posts} 
           followingPosts={followingPosts} 
           onUserClick={handleUserSelect}
@@ -72,14 +72,14 @@ export default function MainAppMobile() {
         <UserProfile userId={selectedUserId} />
       )}
 
-      <BottomNav 
+      <BottomNavPremium 
         activeView={view}
         onViewChange={setView}
         onCreateClick={() => setShowCreateModal(true)}
       />
 
       {showCreateModal && (
-        <CreatePostModal onClose={() => setShowCreateModal(false)} />
+        <CreatePostPremium onClose={() => setShowCreateModal(false)} />
       )}
 
       {selectedPost && (
