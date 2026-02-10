@@ -6,6 +6,7 @@ import Header from './ui/Header'
 import FeedView from './post/FeedView'
 import CosmosView from './cosmos/CosmosView'
 import UserProfile from './ui/UserProfile'
+import FirebaseDebug from './ui/FirebaseDebug'
 
 export default function MainApp() {
   const { user } = useUserStore()
@@ -14,9 +15,14 @@ export default function MainApp() {
   const [followingPosts, setFollowingPosts] = useState<any[]>([])
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null)
   const [followingIds, setFollowingIds] = useState<string[]>([])
+  const [showDebug, setShowDebug] = useState(true)
 
   useEffect(() => {
-    const unsubscribe = listenToPosts((newPosts) => setPosts(newPosts), 'foryou')
+    console.log('🔍 Setting up posts listener...')
+    const unsubscribe = listenToPosts((newPosts) => {
+      console.log('📬 Received posts:', newPosts.length)
+      setPosts(newPosts)
+    }, 'foryou')
     return () => unsubscribe()
   }, [])
 
@@ -46,6 +52,8 @@ export default function MainApp() {
   return (
     <div className="min-h-screen bg-black">
       <Header onUserSelect={handleUserSelect} />
+
+      {showDebug && <FirebaseDebug />}
 
       {view === 'cosmos' && <CosmosView posts={posts} />}
       {view === 'feed' && <FeedView posts={posts} followingPosts={followingPosts} />}
