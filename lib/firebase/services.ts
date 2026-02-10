@@ -29,9 +29,9 @@ export const listenToPosts = (callback: (posts: any[]) => void, feedType?: 'fory
       limit(50)
     )
   } else if (feedType === 'foryou') {
+    // FIX: Trier par createdAt au lieu de reactionsCount pour éviter les posts sans ce champ
     q = query(
       collection(db, 'posts'),
-      orderBy('reactionsCount', 'desc'),
       orderBy('createdAt', 'desc'),
       limit(50)
     )
