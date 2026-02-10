@@ -7,7 +7,7 @@ import { AVAILABLE_EMOJIS } from '@/types'
 export default function PostCardMobile({ post, onUserClick }: { post: any; onUserClick?: (userId: string) => void }) {
   const { user } = useUserStore()
   const [isLiked, setIsLiked] = useState(false)
-  const [likesCount, setLikesCount] = useState(post.likesCount || 0)
+  const [likesCount, setLikesCount] = useState<number>(post.likesCount || 0)
   const [showReactions, setShowReactions] = useState(false)
   const [userReactions, setUserReactions] = useState<string[]>([])
   const [floating, setFloating] = useState<{emoji: string, id: number}[]>([])
@@ -30,17 +30,16 @@ export default function PostCardMobile({ post, onUserClick }: { post: any; onUse
     if (!user || isLiked) return
     
     setIsLiked(true)
-    setLikesCount(prev => prev + 1)
+    setLikesCount((prev: number) => prev + 1)
     
-    // Floating animation
-    setFloating(prev => [...prev, { emoji: '💚', id: Date.now() }])
-    setTimeout(() => setFloating(prev => prev.slice(1)), 1500)
+    setFloating((prev: {emoji: string, id: number}[]) => [...prev, { emoji: '💚', id: Date.now() }])
+    setTimeout(() => setFloating((prev: {emoji: string, id: number}[]) => prev.slice(1)), 1500)
     
     try {
       await likePost(user.uid, post.id, post.authorId)
     } catch (error: any) {
       setIsLiked(false)
-      setLikesCount(prev => prev - 1)
+      setLikesCount((prev: number) => prev - 1)
     }
   }
 
@@ -49,8 +48,8 @@ export default function PostCardMobile({ post, onUserClick }: { post: any; onUse
     const emojiData = AVAILABLE_EMOJIS.find(e => e.emoji === emoji)
     if (!emojiData) return
 
-    setFloating(prev => [...prev, { emoji, id: Date.now() }])
-    setTimeout(() => setFloating(prev => prev.slice(1)), 1500)
+    setFloating((prev: {emoji: string, id: number}[]) => [...prev, { emoji, id: Date.now() }])
+    setTimeout(() => setFloating((prev: {emoji: string, id: number}[]) => prev.slice(1)), 1500)
     setShowReactions(false)
 
     try {
@@ -63,10 +62,8 @@ export default function PostCardMobile({ post, onUserClick }: { post: any; onUse
 
   return (
     <div className="relative bg-gradient-to-br from-zinc-900/80 to-black/80 backdrop-blur-xl border border-zinc-800 rounded-3xl p-5 mb-4 hover:border-zinc-700 transition-all animate-slideUp overflow-hidden">
-      {/* Gradient Overlay */}
       <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-green-400/5 to-transparent pointer-events-none" />
 
-      {/* Header */}
       <div className="relative flex items-center gap-3 mb-4">
         <button 
           onClick={() => onUserClick?.(post.authorId)}
@@ -85,12 +82,10 @@ export default function PostCardMobile({ post, onUserClick }: { post: any; onUse
         </div>
       </div>
 
-      {/* Content */}
       <p className="text-white text-base leading-relaxed mb-4 relative z-10">
         {post.content}
       </p>
 
-      {/* Reactions Display */}
       {Object.keys(postReactions).length > 0 && (
         <div className="flex flex-wrap gap-2 mb-4">
           {Object.entries(postReactions).map(([emoji, count]: [string, any]) => (
@@ -104,9 +99,7 @@ export default function PostCardMobile({ post, onUserClick }: { post: any; onUse
         </div>
       )}
 
-      {/* Actions */}
       <div className="flex items-center gap-3">
-        {/* Like */}
         <button
           onClick={handleLike}
           disabled={isLiked}
@@ -120,7 +113,6 @@ export default function PostCardMobile({ post, onUserClick }: { post: any; onUse
           <span>{likesCount}</span>
         </button>
 
-        {/* React */}
         <button
           onClick={() => setShowReactions(!showReactions)}
           className="flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-2xl font-bold bg-zinc-800/50 backdrop-blur-xl border-2 border-zinc-700 text-gray-400 hover:border-cyan-400 transition-all active:scale-95"
@@ -130,11 +122,10 @@ export default function PostCardMobile({ post, onUserClick }: { post: any; onUse
         </button>
       </div>
 
-      {/* Reactions Popup */}
       {showReactions && (
         <div className="absolute bottom-20 left-1/2 -translate-x-1/2 bg-black/95 backdrop-blur-2xl border-2 border-green-400 rounded-3xl p-4 shadow-2xl animate-slideUp z-20">
           <div className="flex gap-3 mb-2">
-            {ownedEmojis.map(emoji => {
+            {ownedEmojis.map((emoji: string) => {
               const emojiData = AVAILABLE_EMOJIS.find(e => e.emoji === emoji)
               const alreadyUsed = userReactions.includes(emoji)
               return (
@@ -154,8 +145,7 @@ export default function PostCardMobile({ post, onUserClick }: { post: any; onUse
         </div>
       )}
 
-      {/* Floating Emojis */}
-      {floating.map(item => (
+      {floating.map((item) => (
         <div
           key={item.id}
           className="absolute text-5xl animate-float-up pointer-events-none z-30"
