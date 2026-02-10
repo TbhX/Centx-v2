@@ -54,14 +54,11 @@ export default function PostDetailModal({ post, onClose, onUserClick }: { post: 
   return (
     <div className="fixed inset-0 z-[100] bg-black/95 backdrop-blur-2xl animate-fadeIn flex items-end">
       <div className="w-full bg-gradient-to-t from-zinc-900 via-zinc-900 to-transparent rounded-t-3xl max-h-[85vh] overflow-y-auto animate-slideUp">
-        {/* Handle */}
         <div className="flex justify-center py-3">
           <div className="w-12 h-1.5 bg-zinc-700 rounded-full" />
         </div>
 
-        {/* Content */}
         <div className="p-6">
-          {/* Header */}
           <div className="flex items-center gap-3 mb-6">
             <button
               onClick={() => {
@@ -89,12 +86,10 @@ export default function PostDetailModal({ post, onClose, onUserClick }: { post: 
             </button>
           </div>
 
-          {/* Post Content */}
           <p className="text-white text-xl leading-relaxed mb-6">
             {post.content}
           </p>
 
-          {/* Reactions Display */}
           {Object.keys(postReactions).length > 0 && (
             <div className="flex flex-wrap gap-2 mb-6">
               {Object.entries(postReactions).map(([emoji, count]: [string, any]) => (
@@ -108,7 +103,6 @@ export default function PostDetailModal({ post, onClose, onUserClick }: { post: 
             </div>
           )}
 
-          {/* Actions */}
           <div className="flex items-center gap-3 mb-6">
             <button
               onClick={handleLike}
@@ -132,12 +126,11 @@ export default function PostDetailModal({ post, onClose, onUserClick }: { post: 
             </button>
           </div>
 
-          {/* Reactions Grid */}
           {showReactions && (
             <div className="bg-zinc-800/50 backdrop-blur-xl border-2 border-green-400 rounded-3xl p-6 mb-6 animate-slideUp">
               <div className="text-sm text-gray-400 mb-4 text-center">Choisis une réaction</div>
               <div className="grid grid-cols-5 gap-4">
-                {ownedEmojis.map(emoji => {
+                {ownedEmojis.map((emoji: string) => {
                   const emojiData = AVAILABLE_EMOJIS.find(e => e.emoji === emoji)
                   const alreadyUsed = userReactions.includes(emoji)
                   return (
