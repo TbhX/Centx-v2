@@ -19,7 +19,7 @@ export default function UserProfile({ userId }: { userId: string }) {
     }
     loadUser()
 
-    const unsubscribe = listenToPosts((newPosts) => setPosts(newPosts), userId)
+    const unsubscribe = listenToPosts((newPosts) => setPosts(newPosts), undefined, userId)
     return () => unsubscribe()
   }, [userId])
 
